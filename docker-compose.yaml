@@ -3,7 +3,9 @@ services:
   auth:
     build: ./auth-api
     ports:
-      - '8000:3000'
+      #- '8000:3000'
+      - '8012:3000'
+      # use 8012 because 8000 being used
     environment:
       TOKEN_KEY: 'shouldbeverysecure'
   users:
@@ -11,12 +13,16 @@ services:
     ports:
       - '8080:3000'
     environment:
-      MONGODB_CONNECTION_URI: 'mongodb+srv://maximilian:wk4nFupsbntPbB3l@cluster0.ntrwp.mongodb.net/users?retryWrites=true&w=majority'
+      #MONGODB_CONNECTION_URI: 'mongodb+srv://maximilian:wk4nFupsbntPbB3l@cluster0.ntrwp.mongodb.net/users?retryWrites=true&w=majority'
+      MONGODB_CONNECTION_URI: 'mongodb+srv://dave:8JJDseGJYGqTbtsc@cluster0.pj1lxuo.mongodb.net/users?retryWrites=true&w=majority'
       AUTH_API_ADDRESS: 'auth:3000'
   tasks:
     build: ./tasks-api
     ports:
-      - '3000:3000'
+      #- '3000:3000'
+      - '3001:3000'
+      #3000 exposed is being used by 9_152 project. Use 3001
     environment:
-      MONGODB_CONNECTION_URI: 'mongodb+srv://maximilian:wk4nFupsbntPbB3l@cluster0.ntrwp.mongodb.net/users?retryWrites=true&w=majority'
+      #MONGODB_CONNECTION_URI: 'mongodb+srv://maximilian:wk4nFupsbntPbB3l@cluster0.ntrwp.mongodb.net/users?retryWrites=true&w=majority'
+      MONGODB_CONNECTION_URI: 'mongodb+srv://dave:8JJDseGJYGqTbtsc@cluster0.pj1lxuo.mongodb.net/users?retryWrites=true&w=majority'
       AUTH_API_ADDRESS: 'auth:3000'
