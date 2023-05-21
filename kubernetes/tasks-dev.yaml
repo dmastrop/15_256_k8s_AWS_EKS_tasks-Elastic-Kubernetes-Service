@@ -8,9 +8,9 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 80
-      # use tasks.yaml (this file) for AWS EKS and tasks-dev.yaml for development
-      #port: 8082
+      # use this file tasks-dev.yaml for development and keep port at 8082. Use tasks.yaml for AWS EKS deployment with port 80.
+      #port: 80
+      port: 8082
       # temporarily run this on 8082 (8081 is used) to avoid port conflicts using docker desktop k8s
       # set back to 80 for AWS EKS deployment
       targetPort: 3000
