@@ -42,10 +42,11 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      #port: 80
+      port: 80
       #temporarily try on 8080
       # must set back to 80 for AWS EKS
-      port: 8080
+      #port: 8080
+      # no longer need to do this. I had to use a users-dev.yaml file for PV and PVC issue.
       targetPort: 3000
 ---
 apiVersion: apps/v1
