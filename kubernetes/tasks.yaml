@@ -8,7 +8,10 @@ spec:
   type: LoadBalancer
   ports:
     - protocol: TCP
-      port: 80
+      #port: 80
+      port: 8082
+      # temporarily run this on 8082 (8081 is used) to avoid port conflicts using docker desktop k8s
+      # set back to 80 for AWS EKS deployment
       targetPort: 3000
 ---
 apiVersion: apps/v1
@@ -27,9 +30,13 @@ spec:
     spec:
       containers:
         - name: tasks-api
-          image: academind/kub-dep-tasks
+          #image: academind/kub-dep-tasks
+          image: dave123456789/k8s-deploy-tasks2:latest
           env:
             - name: MONGODB_CONNECTION_URI
-              value: 'mongodb+srv://maximilian:wk4nFupsbntPbB3l@cluster0.ntrwp.mongodb.net/users?retryWrites=true&w=majority'
+              #value: 'mongodb+srv://maximilian:wk4nFupsbntPbB3l@cluster0.ntrwp.mongodb.net/users?retryWrites=true&w=majority'
+              value: 'mongodb+srv://dave:8JJDseGJYGqTbtsc@cluster0.pj1lxuo.mongodb.net/users?retryWrites=true&w=majority'
+              # NOTE: unlike Section 14, Section 15 tasks-api will contact both mongodb and auth api (see below) so need both as ENV vars
             - name: AUTH_API_ADDRESS
               value: 'auth-service.default:3000'
+              # k8s has dns for object names. Cannot use with the docker-compose. The default namespace is used on both EKS and docker desktop
