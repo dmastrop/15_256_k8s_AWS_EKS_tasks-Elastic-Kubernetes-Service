@@ -1,0 +1,85 @@
+#kind: StorageClass
+#apiVersion: storage.k8s.io/v1
+#metadata:
+#  name: efs-sc
+#provisioner: efs.csi.aws.com
+#---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: efs-pv
+spec:
+  capacity: 
+    storage: 5Gi
+  volumeMode: Filesystem
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  csi:
+    driver: efs.csi.aws.com
+    volumeHandle: fs-09d6d1ad84f93362c
+    # this is my file system id found in EFS console
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: efs-pvc
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: ""
+  resources:
+    requests:
+      storage: 5Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: users-service
+spec:
+  selector:
+    app: users
+  type: LoadBalancer
+  ports:
+    - protocol: TCP
+      #port: 80
+      #temporarily try on 8080
+      # must set back to 80 for AWS EKS
+      port: 8080
+      # no longer need to do this. I had to use a users-dev.yaml file for PV and PVC issue.
+      targetPort: 3000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: users-deployment
+spec:
+  #replicas: 2
+  replicas: 3
+  selector:
+    matchLabels:
+      app: users
+  template:
+    metadata:
+      labels:
+        app: users
+    spec:
+      containers:
+        - name: users-api
+          #image: academind/kub-dep-users:latest
+          #image: dave123456789/k8s-deploy-users2:latest
+          image: dave123456789/k8s-deploy-users3:latest
+          env:
+            - name: MONGODB_CONNECTION_URI
+              #value: 'mongodb+srv://maximilian:wk4nFupsbntPbB3l@cluster0.ntrwp.mongodb.net/users?retryWrites=true&w=majority'
+              value: 'mongodb+srv://dave:8JJDseGJYGqTbtsc@cluster0.pj1lxuo.mongodb.net/users?retryWrites=true&w=majority'
+            - name: AUTH_API_ADDRESS
+              value: 'auth-service.default:3000'
+              # with k8s there is domain name lookup for all object names. Default is the namespace on amazon and docker desktop default.
+          volumeMounts:
+            - name: efs-vol
+              mountPath: /app/users
+      volumes:
+        - name: efs-vol
+          persistentVolumeClaim: 
+            claimName: efs-pvc
