@@ -18,3 +18,4 @@ Image 3 without PV and PVC: the container comes up and does not crash when hitti
 
 For development best to use Scenario 3 until I add the local volume.  Without a local volume the /users logs are not persistent and will not survive a reboot of the container.
 
+Try out kustomize to deal with this. There is also the port issue with docker desktop and the ports 8080 and 8082 have to be used instead of port 80s in the production/master k8s.
