@@ -1,0 +1,20 @@
+for development branch testing
+
+Use k8 auth.yaml, tasks-dev.yaml, and users-dev.yaml 
+No PV/PVC (commented out)
+ports 8080 and 8082
+This comes up fine
+/logs will come up if there is a /users directory created and built in to the image.  In this case there is no /users directory built into the image.
+(users image2)
+This crashes when hitting the /logs directory
+
+Scenario 2
+Use k8 auth.yaml, tasks-dev.yaml, and users-prod-port8080-image3.yaml
+Image3 with PV and PVC: the container will not come up 
+
+Scenario 3
+use k8 auth.yaml, tasks-dev.yaml, and users-dev1-image3.yaml. Image3 with no PV and no PVC
+Image 3 without PV and PVC: the container comes up and does not crash when hitting /logs
+
+For development best to use Scenario 3 until I add the local volume.  Without a local volume the /users logs are not persistent and will not survive a reboot of the container.
+
