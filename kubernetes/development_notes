@@ -14,6 +14,7 @@ Image3 with PV and PVC: the container will not come up
 
 Scenario 3
 use k8 auth.yaml, tasks-dev.yaml, and users-dev1-image3.yaml. Image3 with no PV and no PVC yaml configuration
+Note image 3 has the /users directory built into it.
 Image 3 without PV and PVC yaml configuration: the container comes up and does not crash when hitting /logs
 
 For development best to use Scenario 3 until I add the local volume.  Without a local volume the /users logs are not persistent and will not survive a reboot of the container.
